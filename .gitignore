@@ -31,3 +31,16 @@ vignettes/*.pdf
 # Temporary files created by R markdown
 *.utf8.md
 *.knit.md
+
+#input data and output figures:
+*~
+*.csv
+*.png
+*.pdf
+
+#report files
+*.rmd
+*.xls
+*.xlsx
+*.ods
+*.html

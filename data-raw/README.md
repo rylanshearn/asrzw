@@ -1,0 +1,1 @@
+Here you'll store your data files that are not in a supported format (for example exel files that need to be exported to .csv). Convert the data here and export the converted data to the ../data folder where they can be encoded in a supported file format, they'll automatically be loaded when you call `load.project()`.
