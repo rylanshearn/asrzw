@@ -134,13 +134,13 @@ r2_labeller.sex <- function(variable,value){
 }
 
 #plot
-scat.sex <- ggplot(datamelt.sex, aes(x=Value, y=Z.W)) +
-  facet_wrap(~Predictor, scales = "free_x", labeller = r2_labeller.sex, ncol = 3) + # Facet grid with variable x axis
+scat.sex <- ggplot(datamelt.sex, aes(x=Z.W, y=Value)) +
+  facet_wrap(~Predictor, scales = "free_y", labeller = r2_labeller.sex, ncol = 3) + # Facet grid with variable x axis
   geom_point(shape=19, aes(colour=factor(Order))) +
   scale_color_discrete("Order") +
   theme_bw() +
   theme(legend.position = "bottom") +
-  labs(x="") +
+  labs(y="") +
   stat_smooth(method = "lm", formula = y ~ x)
 
 #print to file
@@ -156,13 +156,13 @@ r2_labeller.sexd <- function(variable,value){
 }
 
 #plot
-scat.sexd <- ggplot(datamelt.sexd, aes(x=Value, y=Z.W)) +
-  facet_wrap(~Predictor, scales = "free_x", labeller = r2_labeller.sexd, ncol = 3) + # Facet grid with variable x axis
+scat.sexd <- ggplot(datamelt.sexd, aes(x=Z.W, y=Value)) +
+  facet_wrap(~Predictor, scales = "free_y", labeller = r2_labeller.sexd, ncol = 3) + # Facet grid with variable x axis
   geom_point(shape=19, aes(colour=factor(Order))) +
   scale_color_discrete("Order") +
   theme_bw() +
   theme(legend.position = "bottom") +
-  labs(x="") +
+  labs(y="") +
   stat_smooth(method = "lm", formula = y ~ x)
 
 #print to file
@@ -178,13 +178,13 @@ r2_labeller.phen <- function(variable,value){
 }
 
 #plot
-scat.phen <- ggplot(datamelt.phen, aes(x=Value, y=Z.W)) +
-  facet_wrap(~Predictor, scales = "free_x", labeller = r2_labeller.phen, ncol = 3) + # Facet grid with variable x axis
+scat.phen <- ggplot(datamelt.phen, aes(x=Z.W, y=Value)) +
+  facet_wrap(~Predictor, scales = "free_y", labeller = r2_labeller.phen, ncol = 3) + # Facet grid with variable x axis
   geom_point(shape=19, aes(colour=factor(Order))) +
   scale_color_discrete("Order") +
   theme_bw() +
   theme(legend.position = "bottom") +
-  labs(x="") +
+  labs(y="") +
   stat_smooth(method = "lm", formula = y ~ x)
 
 #print to file

@@ -27,9 +27,10 @@ zw <- rsbl20120083supp1 #zw data
 pipoly <- nature15380.s2 #pipoly et al (2015) data
 szekely <- rspb20140342supp2 #data from Szekely et al (2014) - also in Owens and Bennett (1994)
 owens <- OwensBennett1994 #owens & bennett (1994) data
+cdata <- genome.size.data.151216.01.54.11[c(6:15)] #cdatabase subset (no taxa info)
 
 #clear original dataframes
-rm(BirdLife.Checklist.Version.8, rsbl20120083supp1, nature15380.s2, rspb20140342supp2, OwensBennett1994)
+rm(BirdLife.Checklist.Version.8, rsbl20120083supp1, nature15380.s2, rspb20140342supp2, OwensBennett1994, genome.size.data.151216.01.54.11)
 
 #########################################################################
 # adjust tax data
@@ -166,16 +167,47 @@ asrData <- subset(asrData, !duplicated(asrData[,1]))
 colnames(zw) <- gsub('_', '.', colnames(zw)) 
 
 #########################################################################
-# merge ASR with ZW
+# adjust cdata genome size data
+
+#add suffix to end of column names
+colnames(cdata) <- paste(colnames(cdata), "cdata", sep = ".")
+#rename species column as 'Name'
+names(cdata)[1] <- c("Name")
+
+#########################################################################
+# merge ASR with ZW and cdata
 
 #merge species with ratio and zw, including missing data elements
 datafull <- merge(data.frame(merge(asrData,zw, by="Name", all.y=TRUE)), #species with ratio but not ZW length
                   data.frame(merge(zw,asrData, by="Name", all.y=TRUE)), #species with zw length but not ratio
                   all=TRUE)
+#merge species cdata genome size info with sex ratio and zw data
+datafull <- merge(cdata,datafull, by="Name", all.y=TRUE)
 #merge species taxonomy information with sex ratio and zw data
 datafull <- merge(tax,datafull, all.y=TRUE)
 #remove duplicated rows of datafull
 datafull <- datafull[!duplicated(datafull), ]
+
+#########################################################################
+# merge genome size data estimates
+
+#copy szekely columns to new ones
+datafull$cdatamerge <- datafull$C.value.cdata
+datafull$genomesizemerge <- datafull$Genomesize
+
+#for row in C.value.cdata
+#if empty
+#insert genomesize estimate from Rutkowska et al (2012)
+datafull <- within(datafull,
+                  cdatamerge <- ifelse(is.na(C.value.cdata),Genomesize, cdatamerge)
+)
+
+#for row in Genomesize
+#if empty
+#insert genomesize estimate from C.value.cdata
+datafull <- within(datafull,
+                   genomesizemerge <- ifelse(is.na(Genomesize),C.value.cdata, genomesizemerge)
+)
 
 #########################################################################
 # Replacing incorrect scientific names (synonyms)
@@ -246,6 +278,11 @@ datafull <- within(datafull,
 datafull <- within(datafull,
                    ASR.status <- ifelse(is.na(ASR.mort.fill),"No ASR data",ASR.status)
 )
+
+#########################################################################
+# merge in species that Jeff can get ASR for
+datafull <- merge(datafull, jeff, by='Name', all=TRUE)
+
 #########################################################################
 ## preparing data for distribution plots
 
@@ -318,7 +355,10 @@ datamelt <- reshape2:::melt.data.frame(data = datafull, id.vars = c("Order",
                                   "sexbias.brood.provisioning.owens",
                                   "sexbias.passive.brood.defence.owens",
                                   "sexbias.active.brood.defence.owens",
+                                  "C.value.cdata",
                                   "Genomesize",
+                                  "genomesizemerge",
+                                  "cdatamerge",
                                   "SpMass",
                                   "Z.total.first"),
                  variable.name = "Predictor", value.name = "Value")
@@ -374,6 +414,9 @@ datamelt.phen <- reshape2:::melt.data.frame(data = datafull, id.vars = c("Order"
                                                             "Body.size.pipoly",
                                                             "abs.Latitude..pipoly",
                                                             "Genomesize",
+                                                            "genomesizemerge",
+                                                            "cdatamerge",
+                                                            "C.value.cdata",
                                                             "SpMass"),
                                            variable.name = "Predictor", value.name = "Value")
 
